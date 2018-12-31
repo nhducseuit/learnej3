@@ -1,0 +1,33 @@
+What’s wrong with this code? After all, it uses streams, lambdas, and method
+references, and gets the right answer. Simply put, it’s not streams code at all; it’s
+iterative code masquerading as streams code. It derives no benefits from the
+streams API, and it’s (a bit) longer, harder to read, and less maintainable than the
+corresponding iterative code. The problem stems from the fact that this code is
+doing all its work in a terminal forEach operation, using a lambda that mutates
+external state (the frequency table). A forEach operation that does anything more
+than present the result of the computation performed by a stream is a “bad smell in
+code,” as is a lambda that mutates state. So how should this code look?
+This snippet does the same thing as the previous one but makes proper use of
+the streams API. It’s shorter and clearer. So why would anyone write it the other
+way? Because it uses tools they’re already familiar with. Java programmers know
+how to use for-each loops, and the forEach terminal operation is similar. But the
+forEach operation is among the least powerful of the terminal operations and the
+least stream-friendly. It’s explicitly iterative, and hence not amenable to paral-
+lelization. The forEach operation should be used only to report the result of a
+stream computation, not to perform the computation. Occasionally, it makes
+sense to use forEach for some other purpose, such as adding the results of a
+stream computation to a preexisting collection.
+The improved code uses a collector, which is a new concept that you have to
+learn in order to use streams. The Collectors API is intimidating: it has thirty-
+nine methods, some of which have as many as five type parameters. The good
+news is that you can derive most of the benefit from this API without delving into
+its full complexity. For starters, you can ignore the Collector interface and think
+of a collector as an opaque object that encapsulates a reduction strategy. In this
+context, reduction means combining the elements of a stream into a single object.
+The object produced by a collector is typically a collection (which accounts for
+the name collector).
+The collectors for gathering the elements of a stream into a true Collection
+are straightforward. There are three such collectors: toList() , toSet() , and
+toCollection(collectionFactory) . They return, respectively, a set, a list, and
+a programmer-specified collection type. Armed with this knowledge, we can write
+a stream pipeline to extract a top-ten list from our frequency table.

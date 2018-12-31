@@ -1,0 +1,16 @@
+
+\.metadata/
+
+\.recommenders/caches/
+
+\.recommenders/index/http___download_eclipse_org_recommenders_models_oxygen_/
+
+RemoteSystemsTempFiles/
+
+item-24/\.classpath
+
+item-24/\.project
+
+item-24/\.settings/
+
+*.class
